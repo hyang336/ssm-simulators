@@ -1301,7 +1301,34 @@ def simulator(
             return_option=return_option,
             smooth=smooth_unif,
         )
-
+        
+    # 5 Choice models
+    if no_noise:
+        s = np.tile(np.array([0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float32), (n_trials, 1))
+    else:
+        s = np.tile(np.array([1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float32), (n_trials, 1))
+        
+    if model == "race_no_bias_5":
+        x = cssm.race_model(
+            v=theta[:, :5],
+            a=theta[:, [5]],
+            z=np.column_stack(
+                [theta[:, [6]], theta[:, [6]], theta[:, [6]], theta[:, [6]], theta[:, [6]]]
+            ),
+            t=theta[:, [7]],
+            s=s,
+            boundary_fun=bf.constant,
+            boundary_multiplicative=True,
+            boundary_params={},
+            delta_t=delta_t,
+            n_samples=n_samples,
+            n_trials=n_trials,
+            max_t=max_t,
+            random_state=random_state,
+            return_option=return_option,
+            smooth=smooth_unif,
+        )
+        
     # Seq / Parallel models (4 choice)
     if no_noise:
         s = 0.0

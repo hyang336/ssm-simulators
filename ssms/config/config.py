@@ -404,6 +404,19 @@ model_config = {
         "hddm_include": ["v0", "v1", "v2", "v3", "a", "z", "ndt"],
         "nchoices": 4,
     },
+    "race_no_bias_5": {
+        "name": "race_no_bias_5",
+        "params": ["v0", "v1", "v2", "v3", "v4", "a", "z", "ndt"],
+        "param_bounds": [
+            [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
+            [2.5, 2.5, 2.5, 2.5, 2.5, 3.0, 0.9, 2.0],
+        ],
+        "boundary": bf.constant,
+        "n_params": 8,
+        "default_params": [0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 0.5, 1e-3],
+        "hddm_include": ["v0", "v1", "v2", "v3", "v4", "a", "z", "ndt"],
+        "nchoices": 5,
+    },
     "race_no_z_4": {
         "name": "race_no_z_4",
         "params": ["v0", "v1", "v2", "v3", "a", "ndt"],
