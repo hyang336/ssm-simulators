@@ -585,6 +585,12 @@ def simulator(
         )
         theta["t"] = np.expand_dims(theta["t"], axis=1)
         theta["a"] = np.expand_dims(theta["a"], axis=1)
+        #delete v0, v1, v2, v3, and deadline otherwise the cython simulator will complain
+        del theta["v0"]
+        del theta["v1"]
+        del theta["v2"]
+        del theta["v3"]
+        del theta["deadline"]
 
     if model in ["race_no_z_4", "race_no_z_angle_4"]:
         sim_param_dict["s"] = noise_dict["4_particles"]
