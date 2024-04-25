@@ -458,6 +458,13 @@ def simulator(
             ),
             (n_trials, 1),
         ),
+        "5_particles": np.tile(
+            np.array(
+                [1.0] * 5,
+                dtype=np.float32,
+            ),
+            (n_trials, 1),
+        ),
     }
 
     if no_noise:
@@ -635,7 +642,44 @@ def simulator(
         theta["a"] = np.expand_dims(theta["a"], axis=1)
         theta["g"] = np.expand_dims(theta["g"], axis=1)
         theta["b"] = np.expand_dims(theta["b"], axis=1)
+################################################################################################################################################
+    # 5 choice model by HY
+    if model == "race_5":
+        sim_param_dict["s"] = noise_dict["5_particles"]
+        theta["z"] = np.column_stack(
+            [theta["z0"], theta["z1"], theta["z2"], theta["z3"], theta["z4"]]
+        )
+        theta["v"] = np.column_stack(
+            [theta["v0"], theta["v1"], theta["v2"], theta["v3"], theta["v4"]]
+        )
+        theta["t"] = np.expand_dims(theta["t"], axis=1)
+        theta["a"] = np.expand_dims(theta["a"], axis=1)
 
+    if model in ["race_no_bias_5", "race_no_bias_angle_5"]:
+        sim_param_dict["s"] = noise_dict["5_particles"]
+        theta["z"] = np.column_stack([theta["z"], theta["z"], theta["z"], theta["z"], theta["z"]])
+        theta["v"] = np.column_stack(
+            [theta["v0"], theta["v1"], theta["v2"], theta["v3"], theta["v4"]]
+        )
+        theta["t"] = np.expand_dims(theta["t"], axis=1)
+        theta["a"] = np.expand_dims(theta["a"], axis=1)
+        #delete v0, v1, v2, v3, and deadline otherwise the cython simulator will complain
+        del theta["v0"]
+        del theta["v1"]
+        del theta["v2"]
+        del theta["v3"]
+        del theta["v4"]
+        del theta["deadline"]
+
+    if model in ["race_no_z_5", "race_no_z_angle_5"]:
+        sim_param_dict["s"] = noise_dict["5_particles"]
+        theta["z"] = np.tile(np.array([0.0] * 5, dtype=np.float32), (n_trials, 1))
+        theta["v"] = np.column_stack(
+            [theta["v0"], theta["v1"], theta["v2"], theta["v3"], theta["v4"]]
+        )
+        theta["t"] = np.expand_dims(theta["t"], axis=1)
+        theta["a"] = np.expand_dims(theta["a"], axis=1)
+################################################################################################################################################
     # Seq / Parallel models (4 choice)
 
     z_vec = np.tile(np.array([0.5], dtype=np.float32), reps=n_trials)
@@ -766,6 +810,7 @@ def simulator(
     # print(drift_dict)
     # print(sim_param_dict)
     # Call to the simulator
+    print("theta contains:",theta.keys())
     x = model_config[model]["simulator"](
         **theta,
         **boundary_dict,

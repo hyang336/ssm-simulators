@@ -371,12 +371,12 @@ class LogKDE:
             else:
                 n_by_choice.append(round(n_samples * alternate_choice_p[i]))
 
-        # Catch a potential dimension error if we ended up rounding up twice
+        # Catch a potential dimension error if we ended up rounding up twice, modified by HY to account for difference more than 1
         if sum(n_by_choice) > n_samples:
-            n_by_choice[np.argmax(n_by_choice)] -= 1
+            n_by_choice[np.argmax(n_by_choice)] -= (sum(n_by_choice) - n_samples)
         elif sum(n_by_choice) < n_samples:
-            n_by_choice[np.argmax(n_by_choice)] += 1
-            choices[n_samples - 1, 0] = np.random.choice(self.data["choices"])
+            n_by_choice[np.argmax(n_by_choice)] += (n_samples - sum(n_by_choice))
+            #choices[n_samples - 1, 0] = np.random.choice(self.data["choices"])
 
         # Get samples
         cnt_low = 0
